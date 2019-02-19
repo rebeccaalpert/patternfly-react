@@ -1,4 +1,5 @@
 import React from 'react';
+import ReactDOM from 'react-dom';
 import styles from '@patternfly/patternfly/components/Tabs/tabs.css';
 import { css } from '@patternfly/react-styles';
 import PropTypes from 'prop-types';
@@ -49,8 +50,24 @@ class Tabs extends React.Component {
   id = getUniqueId();
   tabList = React.createRef();
 
-  handleTabClick(event, eventKey) {
+  handleTabClick(event, eventKey, tabChild) {
     this.props.onSelect(event, eventKey);
+    // process any children outside of the component
+    if (tabChild) {
+      React.Children.map(this.props.children, (child, i) => {
+        document.getElementById(child.props.tabChild).hidden = true;
+      });
+      // most recently selected tabChild
+      document.getElementById(tabChild).hidden = false;
+    }
+  }
+
+  loadUnrelatedChildren = () => {
+    React.Children.map(this.props.children, (child, i) => {
+      if (child.props.tabChild && i > 0) {
+        document.getElementById(child.props.tabChild).hidden = true;
+      }
+    });
   }
 
   handleScrollButtons = () => {
@@ -125,6 +142,8 @@ class Tabs extends React.Component {
 
     // call the handle resize function to check if scroll buttons should be shown
     this.handleScrollButtons();
+    // show first tabChild (if present) and hide the rest
+    this.loadUnrelatedChildren();
   }
 
   componentWillUnmount() {
@@ -148,6 +167,7 @@ class Tabs extends React.Component {
       highlightLeftScrollButton,
       highlightRightScrollButton
     } = this.state;
+
     return (
       <React.Fragment>
         <div
@@ -185,9 +205,9 @@ class Tabs extends React.Component {
               >
                 <button
                   className={css(styles.tabsButton)}
-                  onClick={event => this.handleTabClick(event, child.props.eventKey)}
+                  onClick={event => this.handleTabClick(event, child.props.eventKey, child.props.tabChild)}
                   id={`pf-tab-${child.props.eventKey}-${child.props.id || this.id}`}
-                  aria-controls={`pf-tab-section-${child.props.eventKey}-${child.props.id || this.id}`}
+                  aria-controls={child.props.tabChild ? `pf-tab-section-${child.props.eventKey}-${child.props.tabChild}` : `pf-tab-section-${child.props.eventKey}-${child.props.id || this.id}`}
                 >
                   {child.props.title}
                 </button>
@@ -206,7 +226,7 @@ class Tabs extends React.Component {
           )}
         </div>
         {children.map((child, index) => (
-          <section
+          child.props.children && <section
             key={index}
             hidden={child.props.eventKey !== activeKey}
             className={css(child.props.className)}

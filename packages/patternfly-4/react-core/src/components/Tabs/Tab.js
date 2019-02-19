@@ -9,12 +9,15 @@ const propTypes = {
   /** Tab title */
   title: PropTypes.string.isRequired,
   /** uniquely identifies the tab */
-  eventKey: PropTypes.number.isRequired
+  eventKey: PropTypes.number.isRequired,
+  /** child id for case in which a child is defined in a separate section from the tab */
+  tabChild: PropTypes.string,
 };
 
 const defaultProps = {
   children: null,
-  className: ''
+  className: '',
+  tabChild: '',
 };
 
 const Tab = ({ className, children, title, eventKey, ...props }) => <React.Fragment>{children}</React.Fragment>;

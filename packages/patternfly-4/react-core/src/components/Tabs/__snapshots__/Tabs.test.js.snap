@@ -1157,6 +1157,7 @@ exports[`should render secondary tabs 1`] = `
         className=""
         eventKey={10}
         id="secondary tab1"
+        tabChild=""
         title="Secondary Tab 1"
       >
         Secondary Tab 1 section
@@ -1165,6 +1166,7 @@ exports[`should render secondary tabs 1`] = `
         className=""
         eventKey={11}
         id="secondary tab2"
+        tabChild=""
         title="Secondary Tab 2"
       >
         Secondary Tab 2 section
@@ -1173,6 +1175,7 @@ exports[`should render secondary tabs 1`] = `
         className=""
         eventKey={12}
         id="secondary tab3"
+        tabChild=""
         title="Secondary Tab 3"
       >
         Secondary Tab 3 section
