@@ -55,17 +55,26 @@ class Tabs extends React.Component {
     // process any children outside of the component
     if (tabChild) {
       React.Children.map(this.props.children, (child, i) => {
-        document.getElementById(child.props.tabChild).hidden = true;
+        const section = document.getElementById(child.props.tabChild);
+        if (section && section.tagName === 'SECTION') {
+          section.hidden = true;
+        }
       });
       // most recently selected tabChild
-      document.getElementById(tabChild).hidden = false;
+      const selectedTabChild = document.getElementById(tabChild);
+      if (selectedTabChild && selectedTabChild.tagName === 'SECTION') {
+        selectedTabChild.hidden = false;
+      }
     }
   }
 
   loadUnrelatedChildren = () => {
     React.Children.map(this.props.children, (child, i) => {
       if (child.props.tabChild && i > 0) {
-        document.getElementById(child.props.tabChild).hidden = true;
+        const tabChild = document.getElementById(child.props.tabChild);
+        if (tabChild && tabChild.tagName === 'SECTION') {
+          tabChild.hidden = true;
+        }
       }
     });
   }
