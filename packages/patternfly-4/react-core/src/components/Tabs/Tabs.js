@@ -50,33 +50,34 @@ class Tabs extends React.Component {
   id = getUniqueId();
   tabList = React.createRef();
 
-  handleTabClick(event, eventKey, tabChild) {
+  handleTabClick(event, eventKey, tabChildId, tabChildRef) {
     this.props.onSelect(event, eventKey);
     // process any children outside of the component
-    if (tabChild) {
+    if (tabChildRef) {
       React.Children.map(this.props.children, (child, i) => {
-        const section = document.getElementById(child.props.tabChild);
+        const section = ReactDOM.findDOMNode(child.props.tabChildRef.current);
+        if (section) {
+          section.hidden = true;
+        }
+      });
+      // most recently selected tabChild
+      const selectedTabChild = ReactDOM.findDOMNode(tabChildRef.current);
+      if (selectedTabChild) {
+        selectedTabChild.hidden = false;
+      }
+    } else if (tabChildId) {
+      React.Children.map(this.props.children, (child, i) => {
+        const section = document.getElementById(child.props.tabChildId);
         if (section && section.tagName === 'SECTION') {
           section.hidden = true;
         }
       });
       // most recently selected tabChild
-      const selectedTabChild = document.getElementById(tabChild);
+      const selectedTabChild = document.getElementById(tabChildId);
       if (selectedTabChild && selectedTabChild.tagName === 'SECTION') {
         selectedTabChild.hidden = false;
       }
     }
-  }
-
-  loadUnrelatedChildren = () => {
-    React.Children.map(this.props.children, (child, i) => {
-      if (child.props.tabChild && i > 0) {
-        const tabChild = document.getElementById(child.props.tabChild);
-        if (tabChild && tabChild.tagName === 'SECTION') {
-          tabChild.hidden = true;
-        }
-      }
-    });
   }
 
   handleScrollButtons = () => {
@@ -151,8 +152,6 @@ class Tabs extends React.Component {
 
     // call the handle resize function to check if scroll buttons should be shown
     this.handleScrollButtons();
-    // show first tabChild (if present) and hide the rest
-    this.loadUnrelatedChildren();
   }
 
   componentWillUnmount() {
@@ -214,9 +213,9 @@ class Tabs extends React.Component {
               >
                 <button
                   className={css(styles.tabsButton)}
-                  onClick={event => this.handleTabClick(event, child.props.eventKey, child.props.tabChild)}
+                  onClick={event => this.handleTabClick(event, child.props.eventKey, child.props.tabChildId, child.props.tabChildRef)}
                   id={`pf-tab-${child.props.eventKey}-${child.props.id || this.id}`}
-                  aria-controls={child.props.tabChild ? `pf-tab-section-${child.props.eventKey}-${child.props.tabChild}` : `pf-tab-section-${child.props.eventKey}-${child.props.id || this.id}`}
+                  aria-controls={child.props.tabChildId ? `pf-tab-section-${child.props.eventKey}-${child.props.tabChildId}` : `pf-tab-section-${child.props.eventKey}-${child.props.id || this.id}`}
                 >
                   {child.props.title}
                 </button>

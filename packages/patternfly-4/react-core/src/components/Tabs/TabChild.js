@@ -19,8 +19,8 @@ const defaultProps = {
 
 class TabChild extends React.Component {
   render() {
-    const { children, className, eventKey, id, ...props } = this.props;
-    return <section {...props} className={className} id={id} aria-labelledby={`pf-tab-${eventKey}-${id}`}>{children}</section>;
+    const { children, eventKey, id, ...props } = this.props;
+    return <section {...props} id={id} aria-labelledby={`pf-tab-${eventKey}-${id}`}>{children}</section>;
   }
 }
 

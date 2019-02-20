@@ -1,7 +1,7 @@
 import { FunctionComponent, HTMLProps } from 'react';
 
 export interface TabChildProps extends HTMLProps<HTMLDivElement> {
-  eventKey: number,
+  eventKey: number;
   id: string;
 }
 
