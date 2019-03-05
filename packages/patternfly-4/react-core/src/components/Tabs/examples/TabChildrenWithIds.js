@@ -22,8 +22,8 @@ class TabChildrenWithIds extends React.Component {
       </Tabs>
       <div>
         <TabChild eventKey={0} id="tab1Section">Tab 1 section</TabChild>
-        <TabChild eventKey={1} id="tab2Section" hidden>Tab 2 section</TabChild>
-        <TabChild eventKey={2} id="tab3Section" hidden>Tab 3 section</TabChild>
+        <TabChild eventKey={1} id="tab2Section">Tab 2 section</TabChild>
+        <TabChild eventKey={2} id="tab3Section">Tab 3 section</TabChild>
       </div>
     </React.Fragment>;
   }

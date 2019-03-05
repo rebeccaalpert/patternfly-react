@@ -1,4 +1,5 @@
 import React from 'react';
+import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
 
 const propTypes = {
@@ -10,9 +11,9 @@ const propTypes = {
   title: PropTypes.string.isRequired,
   /** uniquely identifies the tab */
   eventKey: PropTypes.number.isRequired,
-  /** child id for case in which a child is defined in a separate section from the tab */
+  /** Child id for case in which a child is defined in a separate section from the tab */
   tabChildId: PropTypes.string,
-  /** child ref for case in which a child is defined in a separate section from the tab */
+  /** Child reference for case in which a child is defined in a separate section from the tab */
   tabChildRef: PropTypes.object,
 };
 
@@ -23,9 +24,26 @@ const defaultProps = {
   tabChildRef: null,
 };
 
-const Tab = ({ className, children, title, eventKey, ...props }) => <React.Fragment>{children}</React.Fragment>;
+const withForwardedRef = Component => {
+  class TabContainer extends React.Component {
+    render() {
+      const { forwardRef, ...rest } = this.props;
+      return <Component forwardRef={forwardRef} {...rest} />;
+    }
+  }
+  return React.forwardRef((props, tabChildRef) => {
+    return <TabContainer {...props} forwardRef={tabChildRef} />;
+  });
+}
+
+class Tab extends React.Component {
+  render() {
+    const { children, eventKey, forwardRef, tabChildId, tabChildRef, ...props } = this.props;
+    return <button {...props} ref={forwardRef}>{children}</button>;
+  }
+}
 
 Tab.propTypes = propTypes;
 Tab.defaultProps = defaultProps;
 
-export default Tab;
+export default withForwardedRef(Tab);

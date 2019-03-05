@@ -19,7 +19,7 @@ const defaultProps = {
 
 class TabChild extends React.Component {
   render() {
-    const { children, eventKey, id, ...props } = this.props;
+    const { children, eventKey, id, innerRef, ...props } = this.props;
     return <section {...props} id={id} aria-labelledby={`pf-tab-${eventKey}-${id}`}>{children}</section>;
   }
 }
@@ -27,4 +27,8 @@ class TabChild extends React.Component {
 TabChild.propTypes = propTypes;
 TabChild.defaultProps = defaultProps;
 
-export default TabChild;
+export default React.forwardRef((props, ref) => (
+  <TabChild {...props} ref={ref}>
+    {props.children}
+  </TabChild>
+));

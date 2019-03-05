@@ -6,6 +6,7 @@ import PropTypes from 'prop-types';
 import { AngleLeftIcon, AngleRightIcon } from '@patternfly/react-icons';
 import { getUniqueId, isElementInView, sideElementIsOutOfView } from '../../helpers/util';
 import { SIDE } from '../../helpers/constants';
+import { Tab } from '@patternfly/react-core';
 
 const propTypes = {
   /** content rendered inside the Tabs Component. */
@@ -80,6 +81,23 @@ class Tabs extends React.Component {
     }
   }
 
+  loadUnrelatedChildren = () => {
+    React.Children.map(this.props.children, (child, i) => {
+      console.log(child);
+      /*if (child.props.tabChildRef && i > 0) {
+        const tabChild = ReactDOM.findDOMNode(child.props.tabChildRef.current);
+        if (tabChild) {
+          tabChild.hidden = true;
+        }
+      }*/ /*else if (child.props.tabChildId && i > 0) {
+        const tabChild = document.getElementById(child.props.tabChildId);
+        if (tabChild && tabChild.tagName === 'SECTION') {
+          tabChild.hidden = true;
+        }
+      }*/
+    });
+  }
+
   handleScrollButtons = () => {
     if (this.tabList.current) {
       const container = this.tabList.current;
@@ -149,9 +167,10 @@ class Tabs extends React.Component {
 
   componentDidMount() {
     window.addEventListener('resize', this.handleScrollButtons, false);
-
     // call the handle resize function to check if scroll buttons should be shown
     this.handleScrollButtons();
+    // show first tabChild (if present) and hide the rest
+    this.loadUnrelatedChildren();
   }
 
   componentWillUnmount() {
@@ -211,14 +230,14 @@ class Tabs extends React.Component {
                   className
                 )}
               >
-                <button
+                <Tab {...child.props}
+                  ref={(node) => { this.child = node; }}
                   className={css(styles.tabsButton)}
                   onClick={event => this.handleTabClick(event, child.props.eventKey, child.props.tabChildId, child.props.tabChildRef)}
                   id={`pf-tab-${child.props.eventKey}-${child.props.id || this.id}`}
-                  aria-controls={child.props.tabChildId ? `pf-tab-section-${child.props.eventKey}-${child.props.tabChildId}` : `pf-tab-section-${child.props.eventKey}-${child.props.id || this.id}`}
-                >
-                  {child.props.title}
-                </button>
+                  aria-controls={child.props.tabChildId ? `pf-tab-section-${child.props.eventKey}-${child.props.tabChildId}` : `pf-tab-section-${child.props.eventKey}-${child.props.id || this.id}`}>
+                    {child.props.title}
+                </Tab>
               </li>
             ))}
           </ul>
