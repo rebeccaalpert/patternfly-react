@@ -250,7 +250,6 @@ class CodeEditor extends React.Component<CodeEditorProps, CodeEditorState> {
     onEditorDidMount: () => {},
     language: Language.plaintext,
     isDarkTheme: false,
-    height: '',
     width: '',
     isLineNumbersVisible: true,
     isReadOnly: false,
@@ -641,7 +640,13 @@ class CodeEditor extends React.Component<CodeEditorProps, CodeEditorState> {
           );
 
           const editor = (
-            <div className={css(styles.codeEditorCode)} ref={this.wrapperRef} tabIndex={0} dir="ltr">
+            <div
+              className={css(styles.codeEditorCode)}
+              style={{ height: '100%' }}
+              ref={this.wrapperRef}
+              tabIndex={0}
+              dir="ltr"
+            >
               <Editor
                 height={height}
                 width={width}
@@ -658,7 +663,11 @@ class CodeEditor extends React.Component<CodeEditorProps, CodeEditorState> {
           );
 
           return (
-            <div className={css(styles.codeEditor, isReadOnly && styles.modifiers.readOnly, className)} ref={this.ref}>
+            <div
+              className={css(styles.codeEditor, isReadOnly && styles.modifiers.readOnly, className)}
+              style={{ height: '100%', display: 'flex', flexDirection: 'column' }}
+              ref={this.ref}
+            >
               {isUploadEnabled || providedEmptyState ? (
                 <div
                   {...getRootProps({
@@ -667,7 +676,10 @@ class CodeEditor extends React.Component<CodeEditorProps, CodeEditorState> {
                   className={css(isLoading && fileUploadStyles.modifiers.loading)}
                 >
                   {editorHeader}
-                  <div className={css(styles.codeEditorMain, isDragActive && styles.modifiers.dragHover)}>
+                  <div
+                    className={css(styles.codeEditorMain, isDragActive && styles.modifiers.dragHover)}
+                    style={{ flexGrow: 1 }}
+                  >
                     <div className={css(styles.codeEditorUpload)}>
                       <input {...getInputProps()} /* hidden, necessary for react-dropzone */ />
                       {(showEmptyState || providedEmptyState) && !value ? emptyState : editor}
@@ -677,7 +689,11 @@ class CodeEditor extends React.Component<CodeEditorProps, CodeEditorState> {
               ) : (
                 <>
                   {editorHeader}
-                  {showEditor && <div className={css(styles.codeEditorMain)}>{editor}</div>}
+                  {showEditor && (
+                    <div className={css(styles.codeEditorMain)} style={{ flexGrow: 1 }}>
+                      {editor}
+                    </div>
+                  )}
                 </>
               )}
             </div>
