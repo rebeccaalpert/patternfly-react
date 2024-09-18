@@ -149,7 +149,7 @@ export interface CodeEditorProps extends Omit<React.HTMLProps<HTMLDivElement>, '
   emptyStateTitle?: React.ReactNode;
   /** Editor header main content title. */
   headerMainContent?: string;
-  /** Height of code editor. Defaults to 100%. 'sizeToFit' will automatically change the height
+  /** Height of code editor. 'sizeToFit' will automatically change the height
    * to the height of the content.
    */
   height?: string | 'sizeToFit';
@@ -157,6 +157,8 @@ export interface CodeEditorProps extends Omit<React.HTMLProps<HTMLDivElement>, '
   isCopyEnabled?: boolean;
   /** Flag indicating the editor is styled using monaco's dark theme. */
   isDarkTheme?: boolean;
+  /** Flag that enables component to consume the available height of its container */
+  isFullHeight?: boolean;
   /** Flag indicating the editor has a plain header. */
   isHeaderPlain?: boolean;
   /** Flag to add download button to code editor actions. */
@@ -520,6 +522,7 @@ class CodeEditor extends React.Component<CodeEditorProps, CodeEditorState> {
       },
       ...optionsProp
     };
+    const isFullHeight = this.props.height === '100%' ? true : this.props.isFullHeight;
 
     return (
       <Dropzone multiple={false} onDropAccepted={this.onDropAccepted} onDropRejected={this.onDropRejected}>
@@ -641,14 +644,13 @@ class CodeEditor extends React.Component<CodeEditorProps, CodeEditorState> {
 
           const editor = (
             <div
-              className={css(styles.codeEditorCode)}
-              style={{ height: '100%' }}
+              className={css(styles.codeEditorCode, isFullHeight && styles.modifiers.fullHeight)}
               ref={this.wrapperRef}
               tabIndex={0}
               dir="ltr"
             >
               <Editor
-                height={height}
+                height={height === '100%' ? undefined : height}
                 width={width}
                 language={language}
                 value={value}
@@ -664,8 +666,12 @@ class CodeEditor extends React.Component<CodeEditorProps, CodeEditorState> {
 
           return (
             <div
-              className={css(styles.codeEditor, isReadOnly && styles.modifiers.readOnly, className)}
-              style={{ height: '100%', display: 'flex', flexDirection: 'column' }}
+              className={css(
+                styles.codeEditor,
+                isReadOnly && styles.modifiers.readOnly,
+                isFullHeight && styles.modifiers.fullHeight,
+                className
+              )}
               ref={this.ref}
             >
               {isUploadEnabled || providedEmptyState ? (
@@ -677,8 +683,11 @@ class CodeEditor extends React.Component<CodeEditorProps, CodeEditorState> {
                 >
                   {editorHeader}
                   <div
-                    className={css(styles.codeEditorMain, isDragActive && styles.modifiers.dragHover)}
-                    style={{ flexGrow: 1 }}
+                    className={css(
+                      styles.codeEditorMain,
+                      isDragActive && styles.modifiers.dragHover,
+                      isFullHeight && styles.modifiers.fullHeight
+                    )}
                   >
                     <div className={css(styles.codeEditorUpload)}>
                       <input {...getInputProps()} /* hidden, necessary for react-dropzone */ />
@@ -690,7 +699,7 @@ class CodeEditor extends React.Component<CodeEditorProps, CodeEditorState> {
                 <>
                   {editorHeader}
                   {showEditor && (
-                    <div className={css(styles.codeEditorMain)} style={{ flexGrow: 1 }}>
+                    <div className={css(styles.codeEditorMain, isFullHeight && styles.modifiers.fullHeight)}>
                       {editor}
                     </div>
                   )}

@@ -41,6 +41,7 @@ export const CodeEditorFullHeight: React.FunctionComponent = () => {
             onChange={onChange}
             language={Language.javascript}
             onEditorDidMount={onEditorDidMount}
+            isFullHeight
           />
         </ModalBody>
         <ModalFooter>
