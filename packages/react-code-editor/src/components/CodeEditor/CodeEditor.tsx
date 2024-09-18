@@ -644,10 +644,11 @@ class CodeEditor extends React.Component<CodeEditorProps, CodeEditorState> {
 
           const editor = (
             <div
-              className={css(styles.codeEditorCode, isFullHeight && styles.modifiers.fullHeight)}
+              className={css(styles.codeEditorCode)}
               ref={this.wrapperRef}
               tabIndex={0}
               dir="ltr"
+              style={{ height: '100%' }}
             >
               <Editor
                 height={height === '100%' ? undefined : height}
@@ -666,13 +667,13 @@ class CodeEditor extends React.Component<CodeEditorProps, CodeEditorState> {
 
           return (
             <div
-              className={css(
-                styles.codeEditor,
-                isReadOnly && styles.modifiers.readOnly,
-                isFullHeight && styles.modifiers.fullHeight,
-                className
-              )}
+              className={css(styles.codeEditor, isReadOnly && styles.modifiers.readOnly, className)}
               ref={this.ref}
+              style={
+                isFullHeight
+                  ? { height: '100%', display: 'flex', flexDirection: 'column' }
+                  : { display: 'flex', flexDirection: 'column' }
+              }
             >
               {isUploadEnabled || providedEmptyState ? (
                 <div
@@ -680,14 +681,12 @@ class CodeEditor extends React.Component<CodeEditorProps, CodeEditorState> {
                     onClick: (event) => event.stopPropagation() // Prevents clicking TextArea from opening file dialog
                   })}
                   className={css(isLoading && fileUploadStyles.modifiers.loading)}
+                  style={{ display: 'flex', flexDirection: 'column', flexGrow: '1' }}
                 >
                   {editorHeader}
                   <div
-                    className={css(
-                      styles.codeEditorMain,
-                      isDragActive && styles.modifiers.dragHover,
-                      isFullHeight && styles.modifiers.fullHeight
-                    )}
+                    className={css(styles.codeEditorMain, isDragActive && styles.modifiers.dragHover)}
+                    style={{ flexGrow: 1 }}
                   >
                     <div className={css(styles.codeEditorUpload)}>
                       <input {...getInputProps()} /* hidden, necessary for react-dropzone */ />
@@ -699,7 +698,7 @@ class CodeEditor extends React.Component<CodeEditorProps, CodeEditorState> {
                 <>
                   {editorHeader}
                   {showEditor && (
-                    <div className={css(styles.codeEditorMain, isFullHeight && styles.modifiers.fullHeight)}>
+                    <div className={css(styles.codeEditorMain)} style={{ flexGrow: 1 }}>
                       {editor}
                     </div>
                   )}
